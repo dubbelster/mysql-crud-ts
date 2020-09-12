@@ -16,8 +16,8 @@ connection.connect((err, ...args) => {
 const users = new Crud<UsersSchema>(connection, 'users');
 
 // users.create({
-//     name: 'Barry',
-//     email: 'b@example.nl',
+//     name: 'Jan',
+//     email: 'j@example.nl',
 //     password: 'pswd'
 // }).then(res => log('Inserted!'))
 // .catch(err => console.log(err));

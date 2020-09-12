@@ -8,6 +8,8 @@ export default class Crud<T> {
     readOne(filter?: any): Promise<T>;
     update(filter: any, data: any): Promise<unknown>;
     delete(filter: any): Promise<OkPacket>;
+    private isFilterValid;
+    private processFilter;
     private handleError;
 }
 export interface OkPacket {

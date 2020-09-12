@@ -74,12 +74,12 @@ var Crud = /** @class */ (function () {
                 return [2 /*return*/, new Promise(function (resolve, reject) {
                         var query = "SELECT * FROM " + _this.tableName;
                         if (filter) {
-                            query += ' WHERE ';
-                            var keys = Object.keys(filter);
-                            for (var i = 0; i < keys.length; i++) {
-                                query += keys[i] + "='" + filter[keys[i]] + "'";
-                                if (i < keys.length - 1)
-                                    query += ' AND ';
+                            if (_this.isFilterValid(filter)) {
+                                query += _this.processFilter(filter);
+                            }
+                            else {
+                                reject('Filter not valid.');
+                                return;
                             }
                         }
                         log(query);
@@ -103,12 +103,12 @@ var Crud = /** @class */ (function () {
                 return [2 /*return*/, new Promise(function (resolve, reject) {
                         var query = "SELECT * FROM " + _this.tableName;
                         if (filter) {
-                            query += ' WHERE ';
-                            var keys = Object.keys(filter);
-                            for (var i = 0; i < keys.length; i++) {
-                                query += keys[i] + "='" + filter[keys[i]] + "'";
-                                if (i < keys.length - 1)
-                                    query += ' AND ';
+                            if (_this.isFilterValid(filter)) {
+                                query += _this.processFilter(filter);
+                            }
+                            else {
+                                reject('Filter not valid.');
+                                return;
                             }
                         }
                         query += ' LIMIT 1';
@@ -145,17 +145,12 @@ var Crud = /** @class */ (function () {
                                 query += ', ';
                         }
                         // WHERE
-                        query += ' WHERE ';
-                        var filterKeys = Object.keys(filter);
-                        // To prevent MySQL syntax error
-                        if (filterKeys.length == 0) {
-                            reject('No keys found in the filter object. (1st argument)');
-                            return;
+                        if (_this.isFilterValid(filter)) {
+                            query += _this.processFilter(filter);
                         }
-                        for (var i = 0; i < filterKeys.length; i++) {
-                            query += filterKeys[i] + "='" + filter[filterKeys[i]] + "'";
-                            if (i < filterKeys.length - 1)
-                                query += ' AND ';
+                        else {
+                            reject('Filter not valid.');
+                            return;
                         }
                         log(query);
                         _this.db.query(query, function (error, res, fields) {
@@ -176,17 +171,13 @@ var Crud = /** @class */ (function () {
             var _this = this;
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve, reject) {
-                        var query = "DELETE FROM " + _this.tableName + " WHERE ";
-                        var keys = Object.keys(filter);
-                        // To prevent MySQL syntax error
-                        if (keys.length == 0) {
-                            reject('No keys found in the filter object.');
-                            return;
+                        var query = "DELETE FROM " + _this.tableName;
+                        if (_this.isFilterValid(filter)) {
+                            query += _this.processFilter(filter);
                         }
-                        for (var i = 0; i < keys.length; i++) {
-                            query += keys[i] + "='" + filter[keys[i]] + "'";
-                            if (i < keys.length - 1)
-                                query += ' AND ';
+                        else {
+                            reject('Filter not valid.');
+                            return;
                         }
                         log(query);
                         _this.db.query(query, function (error, res, fields) {
@@ -201,6 +192,24 @@ var Crud = /** @class */ (function () {
                     })];
             });
         });
+    };
+    Crud.prototype.isFilterValid = function (filter) {
+        var keys = Object.keys(filter);
+        // Check if filter has content.
+        if (keys.length > 0) {
+            return true;
+        }
+        return false;
+    };
+    Crud.prototype.processFilter = function (filter) {
+        var query = ' WHERE ';
+        var keys = Object.keys(filter);
+        for (var i = 0; i < keys.length; i++) {
+            query += keys[i] + "='" + filter[keys[i]] + "'";
+            if (i < keys.length - 1)
+                query += ' AND ';
+        }
+        return query;
     };
     Crud.prototype.handleError = function (error) {
         if (error.fatal)

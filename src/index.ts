@@ -29,12 +29,11 @@ export default class Crud<T> {
             let query = `SELECT * FROM ${this.tableName}`;
 
             if (filter) {
-                query += ' WHERE '
-                const keys = Object.keys(filter);
-
-                for (let i = 0; i < keys.length; i++) {
-                    query += `${keys[i]}='${filter[keys[i]]}'`;
-                    if (i < keys.length - 1) query += ' AND ';
+                if (this.isFilterValid(filter)) {
+                    query += this.processFilter(filter);
+                } else {
+                    reject('Filter not valid.')
+                    return;
                 }
             }
 
@@ -55,12 +54,11 @@ export default class Crud<T> {
             let query = `SELECT * FROM ${this.tableName}`;
 
             if (filter) {
-                query += ' WHERE '
-                const keys = Object.keys(filter);
-
-                for (let i = 0; i < keys.length; i++) {
-                    query += `${keys[i]}='${filter[keys[i]]}'`;
-                    if (i < keys.length - 1) query += ' AND ';
+                if (this.isFilterValid(filter)) {
+                    query += this.processFilter(filter);
+                } else {
+                    reject('Filter not valid.')
+                    return;
                 }
             }
 
@@ -97,18 +95,11 @@ export default class Crud<T> {
             }
 
             // WHERE
-            query += ' WHERE ';
-            const filterKeys = Object.keys(filter);
-            
-            // To prevent MySQL syntax error
-            if (filterKeys.length == 0) {
-                reject('No keys found in the filter object. (1st argument)');
+            if (this.isFilterValid(filter)) {
+                query += this.processFilter(filter);
+            } else {
+                reject('Filter not valid.')
                 return;
-            }
-
-            for (let i = 0; i < filterKeys.length; i++) {
-                query += `${filterKeys[i]}='${filter[filterKeys[i]]}'`;
-                if (i < filterKeys.length - 1) query += ' AND ';
             }
 
             log(query);
@@ -125,19 +116,13 @@ export default class Crud<T> {
 
     async delete(filter: any): Promise<OkPacket> {
         return new Promise((resolve, reject) => {
-            let query = `DELETE FROM ${this.tableName} WHERE `;
+            let query = `DELETE FROM ${this.tableName}`;
 
-            const keys = Object.keys(filter);
-            
-            // To prevent MySQL syntax error
-            if (keys.length == 0) {
-                reject('No keys found in the filter object.');
+            if (this.isFilterValid(filter)) {
+                query += this.processFilter(filter);
+            } else {
+                reject('Filter not valid.')
                 return;
-            }
-
-            for (let i = 0; i < keys.length; i++) {
-                query += `${keys[i]}='${filter[keys[i]]}'`;
-                if (i < keys.length - 1) query += ' AND ';
             }
 
             log(query);
@@ -150,6 +135,29 @@ export default class Crud<T> {
                 };
             });
         });
+    }
+
+    private isFilterValid(filter: any): boolean {
+        const keys = Object.keys(filter);
+
+        // Check if filter has content.
+        if (keys.length > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private processFilter(filter: any): string {
+        let query = ' WHERE '
+        const keys = Object.keys(filter);
+
+        for (let i = 0; i < keys.length; i++) {
+            query += `${keys[i]}='${filter[keys[i]]}'`;
+            if (i < keys.length - 1) query += ' AND ';
+        }
+
+        return query;
     }
 
     private handleError(error: MysqlError): string {
