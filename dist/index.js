@@ -67,7 +67,7 @@ var Crud = /** @class */ (function () {
             });
         });
     };
-    Crud.prototype.read = function (filter) {
+    Crud.prototype.read = function (filter, options) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
@@ -82,6 +82,7 @@ var Crud = /** @class */ (function () {
                                 return;
                             }
                         }
+                        query += _this.processOptions(options || {});
                         log(query);
                         _this.db.query(query, function (error, res, fields) {
                             if (error) {
@@ -210,6 +211,11 @@ var Crud = /** @class */ (function () {
                 query += ' AND ';
         }
         return query;
+    };
+    Crud.prototype.processOptions = function (options) {
+        options.limit = options.limit || 10,
+            options.skip = options.skip || 0;
+        return " LIMIT " + options.skip + "," + options.limit;
     };
     Crud.prototype.handleError = function (error) {
         if (error.fatal)

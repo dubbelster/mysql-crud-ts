@@ -4,13 +4,18 @@ export default class Crud<T> {
     private tableName;
     constructor(dbConnection: Connection, tableName: string);
     create(data: T): Promise<OkPacket>;
-    read(filter?: any): Promise<T[]>;
+    read(filter?: any, options?: Options): Promise<T[]>;
     readOne(filter?: any): Promise<T>;
     update(filter: any, data: any): Promise<unknown>;
     delete(filter: any): Promise<OkPacket>;
     private isFilterValid;
     private processFilter;
+    private processOptions;
     private handleError;
+}
+export interface Options {
+    limit?: number;
+    skip?: number;
 }
 export interface OkPacket {
     fieldCount: number;

@@ -24,7 +24,7 @@ export default class Crud<T> {
         });
     }
 
-    async read(filter?: any): Promise<T[]> {
+    async read(filter?: any, options?: Options): Promise<T[]> {
         return new Promise((resolve, reject) => {
             let query = `SELECT * FROM ${this.tableName}`;
 
@@ -36,6 +36,8 @@ export default class Crud<T> {
                     return;
                 }
             }
+
+            query += this.processOptions(options || {});
 
             log(query);
 
@@ -160,10 +162,22 @@ export default class Crud<T> {
         return query;
     }
 
+    private processOptions(options: Options): string {
+        options.limit = options.limit || 10,
+            options.skip = options.skip || 0
+
+        return ` LIMIT ${options.skip},${options.limit}`;
+    }
+
     private handleError(error: MysqlError): string {
         if (error.fatal) throw error; // Stop programma als de error fataal is.
         return error.message; // Zo niet? Return error message.
     }
+}
+
+export interface Options {
+    limit?: number,
+    skip?: number
 }
 
 export interface OkPacket {

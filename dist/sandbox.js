@@ -28,6 +28,15 @@ connection.connect(function (err) {
     // console.log(...args);
 });
 var users = new index_1.default(connection, 'users');
+// users.create({
+//     name: 'Jan',
+//     email: 'j@example.nl',
+//     password: 'pswd'
+// }).then(res => log('Inserted!'))
+// .catch(err => console.log(err));
+users.read(null, { skip: 2, limit: 2 })
+    .then(function (res) { return log(res); })
+    .catch(function (err) { return log(err); });
 function log() {
     var content = [];
     for (var _i = 0; _i < arguments.length; _i++) {

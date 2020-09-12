@@ -22,9 +22,9 @@ const users = new Crud<UsersSchema>(connection, 'users');
 // }).then(res => log('Inserted!'))
 // .catch(err => console.log(err));
 
-// users.read()
-//     .then(res => log(res))
-//     .catch(err => log(err));
+users.read(null, { skip: 2, limit: 2 })
+    .then(res => log(res))
+    .catch(err => log(err));
 
 // users.readOne()
 //     .then(res => log(res))
