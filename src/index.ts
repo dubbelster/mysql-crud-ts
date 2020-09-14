@@ -39,8 +39,6 @@ export default class Crud<T> {
 
             query += this.processOptions(options || {});
 
-            log(query);
-
             this.db.query(query, (error, res, fields) => {
                 if (error) {
                     reject(this.handleError(error))
@@ -66,8 +64,6 @@ export default class Crud<T> {
 
             query += ' LIMIT 1';
 
-            log(query);
-
             this.db.query(query, (error, res, fields) => {
                 if (error) {
                     reject(this.handleError(error))
@@ -78,7 +74,7 @@ export default class Crud<T> {
         });
     }
 
-    async update(filter: any, data: any) {
+    async update(filter: any, data: any): Promise<OkPacket> {
         return new Promise((resolve, reject) => {
             let query = `UPDATE ${this.tableName} SET `;
 
@@ -104,8 +100,6 @@ export default class Crud<T> {
                 return;
             }
 
-            log(query);
-
             this.db.query(query, (error, res, fields) => {
                 if (error) {
                     reject(this.handleError(error))
@@ -126,8 +120,6 @@ export default class Crud<T> {
                 reject('Filter not valid.')
                 return;
             }
-
-            log(query);
 
             this.db.query(query, (error, res, fields) => {
                 if (error) {

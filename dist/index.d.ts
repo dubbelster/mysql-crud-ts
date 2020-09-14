@@ -6,7 +6,7 @@ export default class Crud<T> {
     create(data: T): Promise<OkPacket>;
     read(filter?: any, options?: Options): Promise<T[]>;
     readOne(filter?: any): Promise<T>;
-    update(filter: any, data: any): Promise<unknown>;
+    update(filter: any, data: any): Promise<OkPacket>;
     delete(filter: any): Promise<OkPacket>;
     private isFilterValid;
     private processFilter;

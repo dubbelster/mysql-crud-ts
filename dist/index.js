@@ -83,7 +83,6 @@ var Crud = /** @class */ (function () {
                             }
                         }
                         query += _this.processOptions(options || {});
-                        log(query);
                         _this.db.query(query, function (error, res, fields) {
                             if (error) {
                                 reject(_this.handleError(error));
@@ -113,7 +112,6 @@ var Crud = /** @class */ (function () {
                             }
                         }
                         query += ' LIMIT 1';
-                        log(query);
                         _this.db.query(query, function (error, res, fields) {
                             if (error) {
                                 reject(_this.handleError(error));
@@ -153,7 +151,6 @@ var Crud = /** @class */ (function () {
                             reject('Filter not valid.');
                             return;
                         }
-                        log(query);
                         _this.db.query(query, function (error, res, fields) {
                             if (error) {
                                 reject(_this.handleError(error));
@@ -180,7 +177,6 @@ var Crud = /** @class */ (function () {
                             reject('Filter not valid.');
                             return;
                         }
-                        log(query);
                         _this.db.query(query, function (error, res, fields) {
                             if (error) {
                                 reject(_this.handleError(error));
