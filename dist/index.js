@@ -54,7 +54,6 @@ var Crud = (function () {
             return __generator(this, function (_a) {
                 return [2, new Promise(function (resolve, reject) {
                         var query = "INSERT INTO " + _this.tableName + " (" + Object.keys(data).join(', ') + ") VALUES (" + ("?, ".repeat(Object.values(data).length - 1) + "?") + ")";
-                        log(query);
                         _this.db.query(query, Object.values(data), function (error, res, fields) {
                             if (error) {
                                 reject(_this.handleError(error));
@@ -142,7 +141,6 @@ var Crud = (function () {
                             if (i < dataKeys.length - 1)
                                 query += ', ';
                         }
-                        log(query);
                         if (_this.isFilterValid(filter)) {
                             query += _this.processFilter(filter);
                         }

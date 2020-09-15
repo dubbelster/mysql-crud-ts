@@ -14,8 +14,6 @@ export default class Crud<T> {
             // const query = `INSERT INTO ${this.tableName} (${Object.keys(data).join(', ')}) VALUES ('${Object.values(data).join("', '")}')`;
             const query = `INSERT INTO ${this.tableName} (${Object.keys(data).join(', ')}) VALUES (${"?, ".repeat(Object.values(data).length - 1) + "?"})`;
 
-            log(query);
-
             this.db.query(query, Object.values(data), (error, res, fields) => {
                 if (error) {
                     reject(this.handleError(error))
@@ -93,8 +91,6 @@ export default class Crud<T> {
                 query += `${dataKeys[i]}=${this.db.escape(data[dataKeys[i]])}`;
                 if (i < dataKeys.length - 1) query += ', ';
             }
-
-            log(query);
 
             // WHERE
             if (this.isFilterValid(filter)) {
