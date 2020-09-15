@@ -25,7 +25,6 @@ connection.connect(function (err) {
     }
     if (err)
         throw err;
-    // console.log(...args);
 });
 var users = new index_1.default(connection, 'users');
 function log() {

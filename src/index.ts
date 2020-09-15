@@ -1,4 +1,3 @@
-import { rejects } from "assert";
 import { Connection, MysqlError } from "mysql";
 
 export default class Crud<T> {
@@ -12,9 +11,12 @@ export default class Crud<T> {
 
     async create(data: T): Promise<OkPacket> {
         return new Promise((resolve, reject) => {
-            const query = `INSERT INTO ${this.tableName} (${Object.keys(data).join(', ')}) VALUES ('${Object.values(data).join("', '")}')`;
+            // const query = `INSERT INTO ${this.tableName} (${Object.keys(data).join(', ')}) VALUES ('${Object.values(data).join("', '")}')`;
+            const query = `INSERT INTO ${this.tableName} (${Object.keys(data).join(', ')}) VALUES (${"?, ".repeat(Object.values(data).length - 1) + "?"})`;
 
-            this.db.query(query, (error, res, fields) => {
+            log(query);
+
+            this.db.query(query, Object.values(data), (error, res, fields) => {
                 if (error) {
                     reject(this.handleError(error))
                 } else {
@@ -88,9 +90,11 @@ export default class Crud<T> {
             }
 
             for (let i = 0; i < dataKeys.length; i++) {
-                query += `${dataKeys[i]}='${data[dataKeys[i]]}'`;
+                query += `${dataKeys[i]}=${this.db.escape(data[dataKeys[i]])}`;
                 if (i < dataKeys.length - 1) query += ', ';
             }
+
+            log(query);
 
             // WHERE
             if (this.isFilterValid(filter)) {
@@ -144,10 +148,11 @@ export default class Crud<T> {
 
     private processFilter(filter: any): string {
         let query = ' WHERE '
-        const keys = Object.keys(filter);
+        const keys: string[] = Object.keys(filter);
 
         for (let i = 0; i < keys.length; i++) {
-            query += `${keys[i]}='${filter[keys[i]]}'`;
+            // db.escape() to prevent SQL injection
+            query += `${keys[i]}=${this.db.escape(filter[keys[i]])}`;
             if (i < keys.length - 1) query += ' AND ';
         }
 
@@ -155,10 +160,12 @@ export default class Crud<T> {
     }
 
     private processOptions(options: Options): string {
-        options.limit = options.limit || 10,
-            options.skip = options.skip || 0
+        options.limit = options.limit || 10;
+        options.skip = options.skip || 0;
 
-        return ` LIMIT ${options.skip},${options.limit}`;
+        // db.escape() to prevent SQL injection
+        return ` LIMIT ${this.db.escape(options.skip)},${this.db.escape(options.limit)}`;
+        // return ` LIMIT ${options.skip},${options.limit}`;
     }
 
     private handleError(error: MysqlError): string {

@@ -16,21 +16,21 @@ connection.connect((err, ...args) => {
 const users = new Crud<UsersSchema>(connection, 'users');
 
 // users.create({
-//     name: 'Jan',
-//     email: 'j@example.nl',
+//     name: 'Test',
+//     email: 'test@example.nl',
 //     password: 'pswd'
 // }).then(res => log('Inserted!'))
 // .catch(err => console.log(err));
 
-// users.read(null, { skip: 2, limit: 2 })
+// users.read(null, { skip: 2, limit: 9 })
 //     .then(res => log(res))
 //     .catch(err => log(err));
 
-// users.readOne()
+// users.readOne({ name: 'Merijn'})
 //     .then(res => log(res))
 //     .catch(err => log(err));
 
-// users.update({ email: 'barry@example.nl'}, { email: 'm@example.nl' })
+// users.update({ email: 'test@example.nl'}, { email: 't@example.nl' })
 //     .then(res => log(res))
 //     .catch(err => log(err));
 

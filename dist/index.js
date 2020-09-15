@@ -43,7 +43,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Crud = /** @class */ (function () {
+var Crud = (function () {
     function Crud(dbConnection, tableName) {
         this.db = dbConnection;
         this.tableName = tableName;
@@ -52,9 +52,10 @@ var Crud = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve, reject) {
-                        var query = "INSERT INTO " + _this.tableName + " (" + Object.keys(data).join(', ') + ") VALUES ('" + Object.values(data).join("', '") + "')";
-                        _this.db.query(query, function (error, res, fields) {
+                return [2, new Promise(function (resolve, reject) {
+                        var query = "INSERT INTO " + _this.tableName + " (" + Object.keys(data).join(', ') + ") VALUES (" + ("?, ".repeat(Object.values(data).length - 1) + "?") + ")";
+                        log(query);
+                        _this.db.query(query, Object.values(data), function (error, res, fields) {
                             if (error) {
                                 reject(_this.handleError(error));
                             }
@@ -71,7 +72,7 @@ var Crud = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve, reject) {
+                return [2, new Promise(function (resolve, reject) {
                         var query = "SELECT * FROM " + _this.tableName;
                         if (filter) {
                             if (_this.isFilterValid(filter)) {
@@ -100,7 +101,7 @@ var Crud = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve, reject) {
+                return [2, new Promise(function (resolve, reject) {
                         var query = "SELECT * FROM " + _this.tableName;
                         if (filter) {
                             if (_this.isFilterValid(filter)) {
@@ -129,21 +130,19 @@ var Crud = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve, reject) {
+                return [2, new Promise(function (resolve, reject) {
                         var query = "UPDATE " + _this.tableName + " SET ";
-                        // SET
                         var dataKeys = Object.keys(data);
-                        // To prevent MySQL syntax error
                         if (dataKeys.length == 0) {
                             reject('No keys found in the data object. (2nd argument)');
                             return;
                         }
                         for (var i = 0; i < dataKeys.length; i++) {
-                            query += dataKeys[i] + "='" + data[dataKeys[i]] + "'";
+                            query += dataKeys[i] + "=" + _this.db.escape(data[dataKeys[i]]);
                             if (i < dataKeys.length - 1)
                                 query += ', ';
                         }
-                        // WHERE
+                        log(query);
                         if (_this.isFilterValid(filter)) {
                             query += _this.processFilter(filter);
                         }
@@ -168,7 +167,7 @@ var Crud = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve, reject) {
+                return [2, new Promise(function (resolve, reject) {
                         var query = "DELETE FROM " + _this.tableName;
                         if (_this.isFilterValid(filter)) {
                             query += _this.processFilter(filter);
@@ -192,7 +191,6 @@ var Crud = /** @class */ (function () {
     };
     Crud.prototype.isFilterValid = function (filter) {
         var keys = Object.keys(filter);
-        // Check if filter has content.
         if (keys.length > 0) {
             return true;
         }
@@ -202,21 +200,21 @@ var Crud = /** @class */ (function () {
         var query = ' WHERE ';
         var keys = Object.keys(filter);
         for (var i = 0; i < keys.length; i++) {
-            query += keys[i] + "='" + filter[keys[i]] + "'";
+            query += keys[i] + "=" + this.db.escape(filter[keys[i]]);
             if (i < keys.length - 1)
                 query += ' AND ';
         }
         return query;
     };
     Crud.prototype.processOptions = function (options) {
-        options.limit = options.limit || 10,
-            options.skip = options.skip || 0;
-        return " LIMIT " + options.skip + "," + options.limit;
+        options.limit = options.limit || 10;
+        options.skip = options.skip || 0;
+        return " LIMIT " + this.db.escape(options.skip) + "," + this.db.escape(options.limit);
     };
     Crud.prototype.handleError = function (error) {
         if (error.fatal)
-            throw error; // Stop programma als de error fataal is.
-        return error.message; // Zo niet? Return error message.
+            throw error;
+        return error.message;
     };
     return Crud;
 }());
