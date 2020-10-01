@@ -1,7 +1,7 @@
 # mysql-crud-ts
 
 Strongly typed CRUD module for MySQL databases.
-CRUD is ancronym for:
+CRUD is an ancronym for:
 - Create
 - Read
 - Update
