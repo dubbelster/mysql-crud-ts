@@ -164,9 +164,10 @@ export default class Crud<T> {
         // return ` LIMIT ${options.skip},${options.limit}`;
     }
 
-    private handleError(error: MysqlError): string {
-        if (error.fatal) throw error; // Stop programma als de error fataal is.
-        return error.message; // Zo niet? Return error message.
+    private handleError(error: MysqlError): MysqlError {
+        // if (error.fatal) throw error; // Stop programma als de error fataal is.
+        // return error.message; // Zo niet? Return error message.
+        return error; // Return hele error, bruikbaarder.
     }
 }
 
