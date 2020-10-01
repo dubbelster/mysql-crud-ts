@@ -210,9 +210,7 @@ var Crud = (function () {
         return " LIMIT " + this.db.escape(options.skip) + "," + this.db.escape(options.limit);
     };
     Crud.prototype.handleError = function (error) {
-        if (error.fatal)
-            throw error;
-        return error.message;
+        return error;
     };
     return Crud;
 }());
