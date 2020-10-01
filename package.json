@@ -15,7 +15,15 @@
     "url": "none yet"
   },
   "keywords": [
-    "MySQL"
+    "MySQL",
+    "CRUD",
+    "TypeScript",
+    "TS",
+    "database",
+    "create",
+    "read",
+    "update",
+    "delete"
   ],
   "author": "Merijn",
   "license": "ISC",
