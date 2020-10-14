@@ -78,7 +78,7 @@ var Crud = (function () {
                                 query += _this.processFilter(filter);
                             }
                             else {
-                                reject('Filter not valid.');
+                                reject(new Error('Filter not valid.'));
                                 return;
                             }
                         }
@@ -107,7 +107,7 @@ var Crud = (function () {
                                 query += _this.processFilter(filter);
                             }
                             else {
-                                reject('Filter not valid.');
+                                reject(new Error('Filter not valid.'));
                                 return;
                             }
                         }
@@ -133,7 +133,7 @@ var Crud = (function () {
                         var query = "UPDATE " + _this.tableName + " SET ";
                         var dataKeys = Object.keys(data);
                         if (dataKeys.length == 0) {
-                            reject('No keys found in the data object. (2nd argument)');
+                            reject(new Error('No keys found in the data object. (2nd argument)'));
                             return;
                         }
                         for (var i = 0; i < dataKeys.length; i++) {
@@ -145,7 +145,7 @@ var Crud = (function () {
                             query += _this.processFilter(filter);
                         }
                         else {
-                            reject('Filter not valid.');
+                            reject(new Error('Filter not valid.'));
                             return;
                         }
                         _this.db.query(query, function (error, res, fields) {
@@ -171,7 +171,7 @@ var Crud = (function () {
                             query += _this.processFilter(filter);
                         }
                         else {
-                            reject('Filter not valid.');
+                            reject(new Error('Filter not valid.'));
                             return;
                         }
                         _this.db.query(query, function (error, res, fields) {

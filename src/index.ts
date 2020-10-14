@@ -32,7 +32,7 @@ export default class Crud<T> {
                 if (this.isFilterValid(filter)) {
                     query += this.processFilter(filter);
                 } else {
-                    reject('Filter not valid.')
+                    reject(new Error('Filter not valid.'));
                     return;
                 }
             }
@@ -57,7 +57,7 @@ export default class Crud<T> {
                 if (this.isFilterValid(filter)) {
                     query += this.processFilter(filter);
                 } else {
-                    reject('Filter not valid.')
+                    reject(new Error('Filter not valid.'));
                     return;
                 }
             }
@@ -83,7 +83,7 @@ export default class Crud<T> {
 
             // To prevent MySQL syntax error
             if (dataKeys.length == 0) {
-                reject('No keys found in the data object. (2nd argument)');
+                reject(new Error('No keys found in the data object. (2nd argument)'));
                 return;
             }
 
@@ -96,7 +96,7 @@ export default class Crud<T> {
             if (this.isFilterValid(filter)) {
                 query += this.processFilter(filter);
             } else {
-                reject('Filter not valid.')
+                reject(new Error('Filter not valid.'));
                 return;
             }
 
@@ -117,7 +117,7 @@ export default class Crud<T> {
             if (this.isFilterValid(filter)) {
                 query += this.processFilter(filter);
             } else {
-                reject('Filter not valid.')
+                reject(new Error('Filter not valid.'));
                 return;
             }
 
